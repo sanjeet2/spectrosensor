@@ -524,16 +524,6 @@ async function send(c) {
 }
 
 function cmdStart() {
-  // Reset everything before starting new session
-  rows = [];
-  trend = [];
-  elapsed = 0;
-  document.getElementById('tblBody').innerHTML = '';
-  document.getElementById('rowsBadge').textContent = '0 readings';
-  document.getElementById('tblLbl').textContent = '0 rows';
-  document.getElementById('timerVal').textContent = '0.0s';
-  setBtn('btnSave', true); setBtn('mobSave', true);
-
   send('M');
   setBtn('btnStart', true);  setBtn('mobStart', true);
   setBtn('btnStop',  false); setBtn('mobStop',  false);
