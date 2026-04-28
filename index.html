@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#060d1a"/>
+<title>AS7341 SpectroSensor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #060d1a;
+  --bg2:    #0b1628;
+  --bg3:    #0f1e35;
+  --border: #1a2e4a;
+  --text:   #ddeeff;
+  --muted:  #4a7090;
+  --card:   #0b1628;
+  --cyan:   #00e5ff;
+  --green:  #00ff88;
+  --orange: #ff8c00;
+  --red:    #ff3355;
+  --mono:   'Space Mono', monospace;
+  --sans:   'Outfit', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);display:flex;flex-direction:column;}
+
+/* ─ HEADER ─ */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;}
+.hdr-logo{font-family:var(--mono);font-size:15px;color:var(--cyan);letter-spacing:3px;}
+.hdr-logo span{color:var(--green);}
+.hdr-conn{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted);}
+.led{width:8px;height:8px;border-radius:50%;background:var(--muted);transition:all .3s;}
+.led.on{background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 2s infinite;}
+.led.busy{background:var(--cyan);animation:blink .4s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ─ LAYOUT ─ */
+.body{display:flex;flex:1;overflow:hidden;}
+
+/* ─ SIDEBAR ─ */
+.side{width:220px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:0;flex-shrink:0;overflow-y:auto;}
+.side-sec{padding:14px 14px 10px;border-bottom:1px solid var(--border);}
+.sec-lbl{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;}
+
+/* ─ BUTTONS ─ */
+.btn{width:100%;padding:10px 12px;border:none;border-radius:7px;font-family:var(--sans);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:6px;letter-spacing:.3px;}
+.btn:last-child{margin-bottom:0;}
+.btn:disabled{opacity:.3;cursor:not-allowed;}
+.btn:active:not(:disabled){transform:scale(.97);}
+.btn-usb{background:rgba(0,229,255,.1);color:var(--cyan);border:1px solid rgba(0,229,255,.3);}
+.btn-usb:hover:not(:disabled){background:rgba(0,229,255,.18);}
+.btn-bt{background:rgba(0,255,136,.1);color:var(--green);border:1px solid rgba(0,255,136,.3);}
+.btn-bt:hover:not(:disabled){background:rgba(0,255,136,.18);}
+.btn-disc{background:rgba(255,51,85,.1);color:var(--red);border:1px solid rgba(255,51,85,.3);}
+.btn-start{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.4);}
+.btn-stop{background:rgba(255,51,85,.15);color:var(--red);border:1px solid rgba(255,51,85,.4);}
+.btn-save{background:rgba(255,140,0,.15);color:var(--orange);border:1px solid rgba(255,140,0,.4);}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);font-size:12px;padding:8px;}
+
+/* ─ TIMER ─ */
+.timer{text-align:center;padding:12px 8px;background:var(--bg3);border-radius:8px;margin-bottom:8px;border:1px solid var(--border);}
+.timer-val{font-family:var(--mono);font-size:30px;color:var(--cyan);letter-spacing:2px;}
+.timer-sub{font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:2px;}
+.rows-badge{text-align:center;font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
+
+/* ─ STATUS ─ */
+.status{display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--bg3);border-radius:6px;border:1px solid var(--border);margin-bottom:8px;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;}
+.status-dot.measuring{background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 1s infinite;}
+.status-dot.stopped{background:var(--red);}
+.status-dot.ready{background:var(--cyan);}
+.status-txt{font-family:var(--mono);font-size:10px;color:var(--muted);}
+
+/* ─ LOG ─ */
+.log{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px;height:90px;overflow-y:auto;font-family:var(--mono);font-size:9px;}
+.ll{color:var(--muted);margin-bottom:1px;word-break:break-all;}
+.ll.ok{color:var(--green);}
+.ll.err{color:var(--red);}
+.ll.info{color:var(--cyan);}
+
+/* ─ MAIN ─ */
+.main{flex:1;overflow-y:auto;padding:16px;}
+
+/* ─ TABS ─ */
+.tabs{display:flex;border-bottom:1px solid var(--border);margin-bottom:16px;gap:0;}
+.tab{padding:9px 18px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .2s;letter-spacing:.5px;}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+.pane{display:none;}
+.pane.active{display:block;}
+
+/* ─ CHANNEL CARDS ─ */
+.ch-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:12px;}
+@media(max-width:900px){.ch-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:600px){.ch-grid{grid-template-columns:repeat(2,1fr);}.side{display:none;}.mob-bar{display:flex!important;}}
+.ch-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;border-top:3px solid var(--border);transition:border-color .3s;}
+.ch-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:5px;}
+.ch-num{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text);}
+.ch-bar-bg{height:3px;background:var(--bg3);border-radius:2px;margin-top:7px;}
+.ch-bar{height:3px;border-radius:2px;transition:width .5s ease;width:0;}
+
+/* ─ ABS CARDS ─ */
+.abs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+@media(max-width:600px){.abs-grid{grid-template-columns:repeat(2,1fr);}}
+.abs-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;}
+.abs-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:5px;}
+.abs-num{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--green);}
+
+/* ─ RATIO GRID ─ */
+.ratio-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+@media(max-width:700px){.ratio-grid{grid-template-columns:repeat(2,1fr);}}
+.ratio-card{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;}
+.ratio-lbl{font-family:var(--mono);font-size:9px;color:var(--muted);}
+.ratio-num{font-family:var(--mono);font-size:13px;color:var(--text);}
+
+/* ─ CHART ─ */
+canvas{width:100%;height:70px;display:block;}
+
+/* ─ TABLE ─ */
+.tbl-wrap{overflow-x:auto;max-height:460px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;}
+table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:10px;}
+th{background:var(--bg2);color:var(--muted);padding:7px 9px;text-align:right;position:sticky;top:0;white-space:nowrap;border-bottom:1px solid var(--border);}
+th:first-child{text-align:left;}
+td{padding:5px 9px;text-align:right;border-bottom:1px solid rgba(26,46,74,.5);}
+td:first-child{text-align:left;color:var(--muted);}
+tr:hover td{background:rgba(0,229,255,.03);}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:14px;margin-bottom:12px;}
+.card-ttl{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;}
+
+/* ─ MODAL ─ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay.show{opacity:1;pointer-events:all;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;width:100%;max-width:400px;transform:translateY(16px);transition:transform .25s;}
+.overlay.show .modal{transform:none;}
+.modal-ttl{font-size:17px;font-weight:700;color:var(--cyan);margin-bottom:4px;}
+.modal-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:18px;}
+.modal input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:11px 13px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;margin-bottom:14px;transition:border-color .2s;}
+.modal input:focus{border-color:var(--cyan);}
+.modal-row{display:flex;gap:8px;}
+.modal-row .btn{flex:1;margin-bottom:0;}
+
+/* ─ TOAST ─ */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--green);color:#001a0d;font-family:var(--mono);font-size:12px;font-weight:700;padding:11px 22px;border-radius:30px;transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.err{background:var(--red);color:#fff;}
+
+/* ─ MOBILE BOTTOM BAR ─ */
+.mob-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);padding:8px 12px;gap:8px;z-index:100;}
+.mob-bar .btn{flex:1;margin-bottom:0;padding:12px 8px;font-size:12px;}
+
+/* ─ CONNECT MODAL ─ */
+.conn-opts{display:flex;flex-direction:column;gap:10px;}
+.conn-opt{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s;text-align:left;}
+.conn-opt:hover{border-color:var(--cyan);background:rgba(0,229,255,.05);}
+.conn-opt-ttl{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.conn-opt-sub{font-family:var(--mono);font-size:10px;color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-logo">AS<span>7341</span> · SPECTROSENSOR</div>
+  <div class="hdr-conn">
+    <div class="led" id="led"></div>
+    <span id="connLbl">Not connected</span>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- SIDEBAR -->
+  <div class="side">
+
+    <!-- CONNECTION -->
+    <div class="side-sec">
+      <div class="sec-lbl">Connect</div>
+      <button class="btn btn-usb" id="btnUsb" onclick="connectUSB()">🔌 USB Cable</button>
+      <button class="btn btn-bt"  id="btnBt"  onclick="connectBT()">📶 Bluetooth</button>
+      <button class="btn btn-disc" id="btnDisc" onclick="doDisconnect()" style="display:none;">✕ Disconnect</button>
+    </div>
+
+    <!-- MEASUREMENT -->
+    <div class="side-sec">
+      <div class="sec-lbl">Measurement</div>
+      <div class="timer">
+        <div class="timer-val" id="timerVal">0.0s</div>
+        <div class="timer-sub">ELAPSED</div>
+      </div>
+      <div class="rows-badge" id="rowsBadge">0 readings</div>
+      <div class="status" id="statusBar">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-txt" id="statusTxt">Ready</span>
+      </div>
+      <button class="btn btn-start" id="btnStart" onclick="cmdStart()" disabled>▶ START</button>
+      <button class="btn btn-stop"  id="btnStop"  onclick="cmdStop()"  disabled>■ STOP</button>
+    </div>
+
+    <!-- SAVE -->
+    <div class="side-sec">
+      <div class="sec-lbl">Export</div>
+      <button class="btn btn-save" id="btnSave" onclick="openSave()" disabled>💾 Save to Sheets</button>
+      <button class="btn btn-ghost" onclick="clearAll()">🗑 Clear data</button>
+    </div>
+
+    <!-- LOG -->
+    <div class="side-sec" style="flex:1;">
+      <div class="sec-lbl">Log</div>
+      <div class="log" id="logBox"></div>
+    </div>
+
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="tabs">
+      <button class="tab active" onclick="showPane('channels',this)">Channels</button>
+      <button class="tab" onclick="showPane('ratios',this)">Ratios</button>
+      <button class="tab" onclick="showPane('history',this)">History</button>
+      <button class="tab" onclick="showPane('guide',this)">Guide</button>
+    </div>
+
+    <!-- CHANNELS -->
+    <div class="pane active" id="pane-channels">
+      <div class="card">
+        <div class="card-ttl">Spectral Channels — Raw Counts</div>
+        <div class="ch-grid" id="chGrid"></div>
+      </div>
+      <div class="card">
+        <div class="card-ttl">Absorbance (vs DI Water Blank)</div>
+        <div class="abs-grid" id="absGrid"></div>
+      </div>
+      <div class="card">
+        <div class="card-ttl">
+          <span>Clear Channel Trend</span>
+          <span style="color:var(--cyan);font-family:var(--mono);font-size:9px;" id="clearLive">—</span>
+        </div>
+        <canvas id="trendChart"></canvas>
+      </div>
+    </div>
+
+    <!-- RATIOS -->
+    <div class="pane" id="pane-ratios">
+      <div class="card">
+        <div class="card-ttl">Ratio Parameters</div>
+        <div class="ratio-grid" id="ratioGrid"></div>
+      </div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="pane" id="pane-history">
+      <div class="card">
+        <div class="card-ttl">
+          <span>All Readings</span>
+          <span id="tblLbl" style="color:var(--green);font-size:10px;">0 rows</span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th>Time</th>
+              <th>F1</th><th>F2</th><th>F3</th><th>F4</th><th>F5</th>
+              <th>F6</th><th>F7</th><th>F8</th><th>Clear</th><th>NIR</th>
+              <th>AbsF7</th><th>AbsF8</th><th>AbsCLR</th>
+            </tr></thead>
+            <tbody id="tblBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="pane" id="pane-guide">
+      <div class="card">
+        <div class="card-ttl">How to use — Step by step</div>
+        <div style="font-size:13px;line-height:2.2;color:#8ab0cc;">
+          <div><span style="color:var(--cyan);font-weight:700;">Step 1 — Power on ESP32</span><br>
+          Plug the ESP32 into a USB power source or laptop using a USB cable.</div>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 2 — Connect</span><br>
+          <b style="color:var(--text);">On laptop (USB cable):</b> Click <b>USB Cable</b> button → a popup appears → select <b>AS7341_Sensor</b> from the list → click Connect.<br>
+          <b style="color:var(--text);">On Android phone (Bluetooth):</b> First go to Phone Settings → Bluetooth → pair with <b>AS7341_Sensor</b>. Then come back here and click <b>Bluetooth</b> button.</div>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 3 — Start measuring</span><br>
+          Place your sample in the cuvette. Click <b style="color:var(--green);">▶ START</b>. Data appears live every second.</div>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 4 — Stop and Save</span><br>
+          Click <b style="color:var(--red);">■ STOP</b> when done. A save dialog appears. Enter a name for your experiment. Click <b style="color:var(--orange);">Save to Google Sheets</b>.<br>
+          You will be asked to sign in to your Google account. The data saves automatically to a new sheet.</div>
+          <div style="margin-top:12px;padding:10px 14px;background:var(--bg3);border-radius:7px;border-left:3px solid var(--cyan);">
+            <b style="color:var(--cyan);">Browser requirement:</b> This app requires <b style="color:var(--text);">Google Chrome</b>. It will not work in Firefox, Safari, or Edge.<br>
+            <b style="color:var(--cyan);">Sensor settings:</b> ATIME=29 · ASTEP=599 · GAIN=4X · DI water blank at Clear ≈ 9449
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM BAR -->
+<div class="mob-bar" id="mobBar">
+  <button class="btn btn-usb" style="font-size:11px;" onclick="connectUSB()">🔌 USB</button>
+  <button class="btn btn-bt"  style="font-size:11px;" onclick="connectBT()">📶 BT</button>
+  <button class="btn btn-start" id="mobStart" onclick="cmdStart()" disabled style="font-size:11px;">▶ START</button>
+  <button class="btn btn-stop"  id="mobStop"  onclick="cmdStop()"  disabled style="font-size:11px;">■ STOP</button>
+  <button class="btn btn-save"  id="mobSave"  onclick="openSave()" disabled style="font-size:11px;">💾</button>
+</div>
+
+<!-- SAVE MODAL -->
+<div class="overlay" id="saveOverlay">
+  <div class="modal">
+    <div class="modal-ttl">💾 Save to Google Sheets</div>
+    <div class="modal-sub" id="modalSub">0 readings collected</div>
+    <input id="expName" type="text" placeholder="e.g. BacteriaExp_01"/>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
+      After clicking Save, you will be asked to<br>sign in with your Google account.
+    </div>
+    <div class="modal-row">
+      <button class="btn btn-ghost" onclick="closeSave()">Cancel</button>
+      <button class="btn btn-save" id="doSaveBtn" onclick="doSave()">Save to Sheets</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════════════
+const SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbw80kprnY8EjpTrLXCk6dXweM8gs1gkcyCWUgRLbNuNydFN4KNuQo0pTug8X-Z4JGPkdg/exec';
+const BAUD        = 115200;
+const FULL_SCALE  = 18000;
+const BT_SERVICE  = '0000ffe0-0000-1000-8000-00805f9b34fb';
+const BT_CHAR     = '0000ffe1-0000-1000-8000-00805f9b34fb';
+
+// ════════════════════════════════════════════════════
+// UI DEFINITIONS
+// ════════════════════════════════════════════════════
+const CHS = [
+  {id:'F1', lbl:'F1 — 415nm', col:'#a78bfa'},
+  {id:'F2', lbl:'F2 — 445nm', col:'#60a5fa'},
+  {id:'F3', lbl:'F3 — 480nm', col:'#22d3ee'},
+  {id:'F4', lbl:'F4 — 515nm', col:'#4ade80'},
+  {id:'F5', lbl:'F5 — 555nm', col:'#facc15'},
+  {id:'F6', lbl:'F6 — 590nm', col:'#fb923c'},
+  {id:'F7', lbl:'F7 — 630nm', col:'#f87171'},
+  {id:'F8', lbl:'F8 — 680nm', col:'#ef4444'},
+  {id:'CLR',lbl:'Clear',      col:'#00e5ff'},
+  {id:'NIR',lbl:'NIR',        col:'#6b7280'},
+];
+const ABS = [
+  {id:'aF6', lbl:'Abs F6 590nm'},
+  {id:'aF7', lbl:'Abs F7 630nm'},
+  {id:'aF8', lbl:'Abs F8 680nm'},
+  {id:'aCLR',lbl:'Abs Clear'},
+];
+const RATIOS = [
+  ['p1','F6/F4'],['p2','F6/F2'],['p3','F7/F5'],['p4','F6/F5'],['p5','F8/F6'],
+  ['p6','F7/F6'],['p7','F6/CLR'],['p8','F7/CLR'],['p9','(F6+F7)/CLR'],['p10','F2/CLR'],
+];
+
+// ════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════
+let connMode   = null; // 'usb' | 'bt'
+let isConn     = false;
+let isMeasure  = false;
+let rows       = [];
+let trend      = [];
+let elapsed    = 0;
+let timerInt   = null;
+let rxBuf      = '';
+
+// USB Serial state
+let usbPort = null, usbWriter = null, usbReader = null;
+// Bluetooth state
+let btDevice = null, btChar = null;
+
+// ════════════════════════════════════════════════════
+// BUILD UI
+// ════════════════════════════════════════════════════
+function buildUI() {
+  document.getElementById('chGrid').innerHTML = CHS.map(c=>`
+    <div class="ch-card" id="cc_${c.id}" style="border-top-color:${c.col}">
+      <div class="ch-lbl">${c.lbl}</div>
+      <div class="ch-num" id="cn_${c.id}">—</div>
+      <div class="ch-bar-bg"><div class="ch-bar" id="cb_${c.id}" style="background:${c.col}"></div></div>
+    </div>`).join('');
+
+  document.getElementById('absGrid').innerHTML = ABS.map(a=>`
+    <div class="abs-card">
+      <div class="abs-lbl">${a.lbl}</div>
+      <div class="abs-num" id="${a.id}">—</div>
+    </div>`).join('');
+
+  document.getElementById('ratioGrid').innerHTML = RATIOS.map(([id,lbl])=>`
+    <div class="ratio-card">
+      <span class="ratio-lbl">${id} ${lbl}</span>
+      <span class="ratio-num" id="${id}">—</span>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════
+// USB CONNECTION (Web Serial)
+// ════════════════════════════════════════════════════
+async function connectUSB() {
+  if (!('serial' in navigator)) {
+    toast('Use Google Chrome browser for USB connection', true);
+    log('Chrome required for USB Serial', 'err'); return;
+  }
+  try {
+    usbPort = await navigator.serial.requestPort();
+    await usbPort.open({ baudRate: BAUD });
+    connMode = 'usb'; isConn = true;
+    usbWriter = usbPort.writable.getWriter();
+    onConnected('USB');
+    usbReadLoop();
+  } catch(e) {
+    if (e.name !== 'NotFoundError') log('USB error: '+e.message, 'err');
+  }
+}
+
+async function usbReadLoop() {
+  const dec = new TextDecoderStream();
+  usbPort.readable.pipeTo(dec.writable);
+  usbReader = dec.readable.getReader();
+  try {
+    while (true) {
+      const {value, done} = await usbReader.read();
+      if (done) break;
+      rxBuf += value;
+      const lines = rxBuf.split('\n');
+      rxBuf = lines.pop();
+      lines.forEach(l => processLine(l.trim()));
+    }
+  } catch(e) { log('USB read error: '+e.message,'err'); onDisconnected(); }
+}
+
+// ════════════════════════════════════════════════════
+// BLUETOOTH CONNECTION (Web Bluetooth)
+// ════════════════════════════════════════════════════
+async function connectBT() {
+  if (!navigator.bluetooth) {
+    toast('Bluetooth needs Chrome on Android', true);
+    log('Web Bluetooth requires Chrome on Android', 'err'); return;
+  }
+  try {
+    log('Scanning for AS7341_Sensor...', 'info');
+    setBusy(true);
+    btDevice = await navigator.bluetooth.requestDevice({
+      filters: [{ name: 'AS7341_Sensor' }],
+      optionalServices: [BT_SERVICE]
+    });
+    btDevice.addEventListener('gattserverdisconnected', onDisconnected);
+    const server  = await btDevice.gatt.connect();
+    const service = await server.getPrimaryService(BT_SERVICE);
+    btChar        = await service.getCharacteristic(BT_CHAR);
+    await btChar.startNotifications();
+    btChar.addEventListener('characteristicvaluechanged', e => {
+      const chunk = new TextDecoder().decode(e.target.value);
+      rxBuf += chunk;
+      const lines = rxBuf.split('\n');
+      rxBuf = lines.pop();
+      lines.forEach(l => processLine(l.trim()));
+    });
+    connMode = 'bt'; isConn = true;
+    setBusy(false);
+    onConnected('Bluetooth');
+  } catch(e) {
+    setBusy(false);
+    if (e.name !== 'NotFoundError') log('BT error: '+e.message,'err');
+  }
+}
+
+// ════════════════════════════════════════════════════
+// DISCONNECT
+// ════════════════════════════════════════════════════
+async function doDisconnect() {
+  isMeasure = false; stopTimer();
+  try {
+    if (usbReader) { await usbReader.cancel(); usbReader = null; }
+    if (usbWriter) { usbWriter.releaseLock(); usbWriter = null; }
+    if (usbPort)   { await usbPort.close(); usbPort = null; }
+    if (btDevice && btDevice.gatt.connected) { btDevice.gatt.disconnect(); }
+  } catch(e) {}
+  onDisconnected();
+}
+
+function onConnected(mode) {
+  document.getElementById('led').className = 'led on';
+  document.getElementById('connLbl').textContent = 'Connected · ' + mode;
+  document.getElementById('btnUsb').style.display  = 'none';
+  document.getElementById('btnBt').style.display   = 'none';
+  document.getElementById('btnDisc').style.display = '';
+  setBtn('btnStart', false); setBtn('mobStart', false);
+  log('Connected via ' + mode, 'ok');
+  setStatus('ready', 'Connected · ready');
+}
+
+function onDisconnected() {
+  isConn = false; connMode = null;
+  document.getElementById('led').className = 'led';
+  document.getElementById('connLbl').textContent = 'Not connected';
+  document.getElementById('btnUsb').style.display  = '';
+  document.getElementById('btnBt').style.display   = '';
+  document.getElementById('btnDisc').style.display = 'none';
+  setBtn('btnStart', true); setBtn('mobStart', true);
+  setBtn('btnStop',  true); setBtn('mobStop',  true);
+  setStatus('', 'Disconnected');
+  log('Disconnected', 'err');
+}
+
+// ════════════════════════════════════════════════════
+// COMMANDS
+// ════════════════════════════════════════════════════
+async function send(c) {
+  const enc = new TextEncoder().encode(c);
+  try {
+    if (connMode === 'usb' && usbWriter) await usbWriter.write(enc);
+    if (connMode === 'bt'  && btChar)    await btChar.writeValue(enc);
+  } catch(e) { log('Send error: '+e.message, 'err'); }
+}
+
+function cmdStart() {
+  send('M');
+  setBtn('btnStart', true);  setBtn('mobStart', true);
+  setBtn('btnStop',  false); setBtn('mobStop',  false);
+}
+
+function cmdStop() {
+  send('S');
+  setBtn('btnStop',  true);  setBtn('mobStop',  true);
+  setBtn('btnStart', false); setBtn('mobStart', false);
+}
+
+// ════════════════════════════════════════════════════
+// PROCESS INCOMING DATA
+// ════════════════════════════════════════════════════
+function processLine(line) {
+  if (!line) return;
+  log(line.substring(0, 70));
+
+  if (line.startsWith('STATUS:')) {
+    const s = line.replace('STATUS:', '');
+    if (s === 'STARTED') { setStatus('measuring','Measuring...'); startTimer(); }
+    if (s === 'STOPPED') { setStatus('stopped','Stopped'); stopTimer(); if(rows.length) openSave(); }
+    if (s === 'READY')   { setStatus('ready','Sensor ready'); log('Sensor ready','ok'); }
+    return;
+  }
+  if (!line.startsWith('DATA,')) return;
+
+  const p = line.split(',');
+  if (p.length < 25) return;
+
+  const r = {
+    time:p[1],
+    F1:+p[2], F2:+p[3],  F3:+p[4],  F4:+p[5],  F5:+p[6],
+    F6:+p[7], F7:+p[8],  F8:+p[9],  CLR:+p[10], NIR:+p[11],
+    p1:+p[12],p2:+p[13], p3:+p[14], p4:+p[15],  p5:+p[16],
+    p6:+p[17],p7:+p[18], p8:+p[19], p9:+p[20],  p10:+p[21],
+    aF6:+p[22],aF7:+p[23],aF8:+p[24],aCLR:+(p[25]||0),
+  };
+
+  rows.push(r);
+  updateLive(r);
+  addRow(r);
+  trend.push(r.CLR); if(trend.length>40) trend.shift();
+  drawChart();
+
+  const n = rows.length;
+  document.getElementById('rowsBadge').textContent = n+' readings';
+  document.getElementById('tblLbl').textContent    = n+' rows';
+  setBtn('btnSave', false); setBtn('mobSave', false);
+}
+
+// ════════════════════════════════════════════════════
+// UPDATE LIVE UI
+// ════════════════════════════════════════════════════
+function updateLive(r) {
+  CHS.forEach(c => {
+    const v = r[c.id] || 0;
+    const ne = document.getElementById('cn_'+c.id);
+    const be = document.getElementById('cb_'+c.id);
+    if (ne) ne.textContent = v.toLocaleString();
+    if (be) be.style.width = Math.min(100,(v/FULL_SCALE)*100)+'%';
+  });
+  document.getElementById('aF6').textContent  = r.aF6.toFixed(4);
+  document.getElementById('aF7').textContent  = r.aF7.toFixed(4);
+  document.getElementById('aF8').textContent  = r.aF8.toFixed(4);
+  document.getElementById('aCLR').textContent = r.aCLR.toFixed(4);
+  document.getElementById('clearLive').textContent = 'CLR = '+r.CLR.toLocaleString();
+  RATIOS.forEach(([id]) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = (r[id]||0).toFixed(3);
+  });
+}
+
+// ════════════════════════════════════════════════════
+// TABLE
+// ════════════════════════════════════════════════════
+function addRow(r) {
+  const tb = document.getElementById('tblBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td>${r.time}</td>
+    <td>${r.F1}</td><td>${r.F2}</td><td>${r.F3}</td><td>${r.F4}</td><td>${r.F5}</td>
+    <td>${r.F6}</td><td>${r.F7}</td><td>${r.F8}</td><td>${r.CLR}</td><td>${r.NIR}</td>
+    <td>${r.aF7.toFixed(4)}</td><td>${r.aF8.toFixed(4)}</td><td>${r.aCLR.toFixed(4)}</td>`;
+  tb.appendChild(tr);
+}
+
+// ════════════════════════════════════════════════════
+// CHART
+// ════════════════════════════════════════════════════
+function drawChart() {
+  const cv = document.getElementById('trendChart');
+  if (!cv.offsetWidth) return;
+  const ctx = cv.getContext('2d');
+  cv.width = cv.offsetWidth; cv.height = 70;
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+  if (trend.length < 2) return;
+  ctx.strokeStyle = '#00e5ff'; ctx.lineWidth = 2;
+  ctx.shadowBlur = 8; ctx.shadowColor = '#00e5ff';
+  ctx.beginPath();
+  trend.forEach((v,i) => {
+    const x = (i/(trend.length-1))*W;
+    const y = H - ((v/FULL_SCALE)*(H-10)) - 5;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = 'rgba(0,229,255,0.06)';
+  ctx.lineTo(W,H); ctx.lineTo(0,H); ctx.closePath(); ctx.fill();
+}
+
+// ════════════════════════════════════════════════════
+// TIMER
+// ════════════════════════════════════════════════════
+function startTimer() {
+  elapsed = 0; clearInterval(timerInt);
+  timerInt = setInterval(() => {
+    elapsed += 0.1;
+    document.getElementById('timerVal').textContent = elapsed.toFixed(1)+'s';
+  }, 100);
+}
+function stopTimer() { clearInterval(timerInt); }
+
+// ════════════════════════════════════════════════════
+// SAVE TO GOOGLE SHEETS
+// ════════════════════════════════════════════════════
+function openSave() {
+  if (!rows.length) { toast('No data to save', true); return; }
+  const d = new Date();
+  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('expName').value = 'Experiment_'+stamp;
+  document.getElementById('modalSub').textContent = rows.length+' readings ready to save';
+  document.getElementById('saveOverlay').classList.add('show');
+}
+function closeSave() { document.getElementById('saveOverlay').classList.remove('show'); }
+
+async function doSave() {
+  const name = document.getElementById('expName').value.trim();
+  if (!name) { alert('Please enter a name'); return; }
+  const btn = document.getElementById('doSaveBtn');
+  btn.textContent = '⏳ Saving...'; btn.disabled = true;
+
+  const headers = ['Time(s)','F1_415nm','F2_445nm','F3_480nm','F4_515nm','F5_555nm',
+    'F6_590nm','F7_630nm','F8_680nm','Clear','NIR',
+    'p1','p2','p3','p4','p5','p6','p7','p8','p9','p10',
+    'Abs_F6','Abs_F7','Abs_F8','Abs_Clear'];
+  const data = rows.map(r => [
+    r.time,r.F1,r.F2,r.F3,r.F4,r.F5,r.F6,r.F7,r.F8,r.CLR,r.NIR,
+    r.p1,r.p2,r.p3,r.p4,r.p5,r.p6,r.p7,r.p8,r.p9,r.p10,
+    r.aF6,r.aF7,r.aF8,r.aCLR
+  ]);
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST', mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ sheetName: name, headers, rows: data })
+    });
+    closeSave();
+    toast('✅ Saved: ' + name);
+    log('Saved to Google Sheets: '+name, 'ok');
+  } catch(e) {
+    toast('Save failed — check internet', true);
+    log('Save error: '+e.message, 'err');
+  } finally {
+    btn.textContent = 'Save to Sheets'; btn.disabled = false;
+  }
+}
+
+// ════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════
+function clearAll() {
+  if (rows.length && !confirm('Clear all data?')) return;
+  rows = []; trend = [];
+  document.getElementById('tblBody').innerHTML = '';
+  document.getElementById('rowsBadge').textContent = '0 readings';
+  document.getElementById('tblLbl').textContent    = '0 rows';
+  document.getElementById('timerVal').textContent  = '0.0s';
+  setBtn('btnSave', true); setBtn('mobSave', true);
+}
+
+function setBtn(id, disabled) {
+  const el = document.getElementById(id);
+  if (el) el.disabled = disabled;
+}
+
+function setStatus(cls, txt) {
+  document.getElementById('statusDot').className = 'status-dot ' + cls;
+  document.getElementById('statusTxt').textContent = txt;
+  isMeasure = cls === 'measuring';
+}
+
+function setBusy(b) {
+  document.getElementById('led').className = 'led' + (b?' busy':'');
+  document.getElementById('connLbl').textContent = b ? 'Connecting...' : 'Not connected';
+}
+
+function log(msg, type='') {
+  const box = document.getElementById('logBox');
+  const d = document.createElement('div');
+  d.className = 'll ' + type;
+  d.textContent = '> ' + msg;
+  box.appendChild(d);
+  box.scrollTop = box.scrollHeight;
+  while (box.children.length > 80) box.removeChild(box.firstChild);
+}
+
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (err?' err':'') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function showPane(id, el) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t  => t.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'channels') setTimeout(drawChart, 50);
+}
+
+// ════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════
+buildUI();
+</script>
+</body>
+</html>
