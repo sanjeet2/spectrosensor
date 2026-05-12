@@ -690,8 +690,8 @@ async function doSave() {
 
   // Category is the FIRST column, then all sensor columns follow
   const headers = [
-    'Category',
     'Time(s)',
+    'Category',
     'F1_415nm','F2_445nm','F3_480nm','F4_515nm','F5_555nm',
     'F6_590nm','F7_630nm','F8_680nm','Clear','NIR',
     'p1(F6/F4)','p2(F6/F2)','p3(F7/F5)','p4(F6/F5)','p5(F8/F6)',
@@ -700,8 +700,8 @@ async function doSave() {
 
   // Each data row starts with the category value
   const data = rows.map(r => [
-    category,
     r.time,
+    category,
     r.F1, r.F2, r.F3, r.F4, r.F5,
     r.F6, r.F7, r.F8, r.CLR, r.NIR,
     r.p1, r.p2, r.p3, r.p4, r.p5,
