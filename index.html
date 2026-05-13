@@ -275,7 +275,28 @@ tr:hover td{background:rgba(0,229,255,.03);}
     <div class="modal-ttl">💾 Save to Google Sheets</div>
     <div class="modal-sub" id="modalSub">0 readings collected</div>
     <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">CATEGORY</div>
-    <input id="expCategory" type="text" placeholder="e.g. DI_Water / 5U_UHP / Blank"/>
+    <select id="expCategorySelect" onchange="onCategoryChange()" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:11px 13px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;margin-bottom:8px;cursor:pointer;">
+      <option value="">— Select category —</option>
+      <option value="ONLY DI">ONLY DI</option>
+      <option value="DI + UHP">DI + UHP</option>
+      <option value="1U + UHP">1U + UHP</option>
+      <option value="5U + UHP">5U + UHP</option>
+      <option value="10U + UHP">10U + UHP</option>
+      <option value="15U + UHP">15U + UHP</option>
+      <option value="20U + UHP">20U + UHP</option>
+      <option value="25U + UHP">25U + UHP</option>
+      <option value="30U + UHP">30U + UHP</option>
+      <option value="D8">D8</option>
+      <option value="D7">D7</option>
+      <option value="D6">D6</option>
+      <option value="D5">D5</option>
+      <option value="D4">D4</option>
+      <option value="D3">D3</option>
+      <option value="D2">D2</option>
+      <option value="D1">D1</option>
+      <option value="__other__">Other (type below) ✏️</option>
+    </select>
+    <input id="expCategoryOther" type="text" placeholder="Type your custom category..." style="display:none;margin-bottom:4px;"/>
     <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">SHEET / EXPERIMENT NAME</div>
     <input id="expName" type="text" placeholder="e.g. Experiment_20260509_1430"/>
     <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
@@ -673,17 +694,22 @@ function openSave() {
   const d     = new Date();
   const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
   document.getElementById('expName').value         = 'Experiment_' + stamp;
-  document.getElementById('expCategory').value     = '';
+  document.getElementById('expCategorySelect').value = '';
+  document.getElementById('expCategoryOther').style.display = 'none';
+  document.getElementById('expCategoryOther').value = '';
   document.getElementById('modalSub').textContent  = rows.length + ' readings ready to save';
   document.getElementById('saveOverlay').classList.add('show');
   // Auto-focus the category field so user can type immediately
-  setTimeout(() => document.getElementById('expCategory').focus(), 100);
+  setTimeout(() => document.getElementById('expCategorySelect').focus(), 100);
 }
 function closeSave() { document.getElementById('saveOverlay').classList.remove('show'); }
 
 async function doSave() {
   const name     = document.getElementById('expName').value.trim();
-  const category = document.getElementById('expCategory').value.trim() || 'Uncategorized';
+  const selVal  = document.getElementById('expCategorySelect').value;
+  const category = (selVal === '__other__')
+    ? (document.getElementById('expCategoryOther').value.trim() || 'Other')
+    : (selVal || 'Uncategorized');
   if (!name) { alert('Please enter a sheet name'); return; }
   const btn  = document.getElementById('doSaveBtn');
   btn.textContent = '⏳ Saving...'; btn.disabled = true;
@@ -800,6 +826,18 @@ function showPane(id, el) {
   document.getElementById('pane-' + id).classList.add('active');
   el.classList.add('active');
   if (id === 'channels') setTimeout(drawChart, 50);
+}
+
+function onCategoryChange() {
+  const sel = document.getElementById('expCategorySelect').value;
+  const otherInput = document.getElementById('expCategoryOther');
+  if (sel === '__other__') {
+    otherInput.style.display = 'block';
+    otherInput.focus();
+  } else {
+    otherInput.style.display = 'none';
+    otherInput.value = '';
+  }
 }
 
 buildUI();
