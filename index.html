@@ -126,7 +126,7 @@ tr:hover td{background:rgba(0,229,255,.03);}
 <body>
 
 <div class="hdr">
-  <div class="hdr-logo">AS<span>7341</span> Â· SPECTROSENSOR</div>
+  <div class="hdr-logo">AS<span>7341</span> | SPECTROSENSOR</div>
   <div class="hdr-conn">
     <div class="led" id="led"></div>
     <span id="connLbl">Not connected</span>
@@ -138,9 +138,9 @@ tr:hover td{background:rgba(0,229,255,.03);}
 
     <div class="side-sec">
       <div class="sec-lbl">Connect</div>
-      <button class="btn btn-usb" id="btnUsb" onclick="connectUSB()">ðŸ”Œ USB Cable</button>
-      <button class="btn btn-bt"  id="btnBt"  onclick="connectBT()">ðŸ“¶ Bluetooth</button>
-      <button class="btn btn-disc" id="btnDisc" onclick="doDisconnect()" style="display:none;">âœ• Disconnect</button>
+      <button class="btn btn-usb" id="btnUsb" onclick="connectUSB()">USB Cable</button>
+      <button class="btn btn-bt"  id="btnBt"  onclick="connectBT()">Bluetooth</button>
+      <button class="btn btn-disc" id="btnDisc" onclick="doDisconnect()" style="display:none;">X Disconnect</button>
     </div>
 
     <div class="side-sec">
@@ -169,14 +169,14 @@ tr:hover td{background:rgba(0,229,255,.03);}
         <div class="status-dot" id="statusDot"></div>
         <span class="status-txt" id="statusTxt">Ready</span>
       </div>
-      <button class="btn btn-start" id="btnStart" onclick="cmdStart()" disabled>â–¶ START</button>
-      <button class="btn btn-stop"  id="btnStop"  onclick="cmdStop()"  disabled>â–  STOP</button>
+      <button class="btn btn-start" id="btnStart" onclick="cmdStart()" disabled>START</button>
+      <button class="btn btn-stop"  id="btnStop"  onclick="cmdStop()"  disabled>STOP</button>
     </div>
 
     <div class="side-sec">
       <div class="sec-lbl">Export</div>
-      <button class="btn btn-save" id="btnSave" onclick="openSave()" disabled>ðŸ’¾ Save to Sheets</button>
-      <button class="btn btn-ghost" onclick="clearAll()">ðŸ—‘ Clear data</button>
+      <button class="btn btn-save" id="btnSave" onclick="openSave()" disabled>Save to Sheets</button>
+      <button class="btn btn-ghost" onclick="clearAll()">Clear data</button>
     </div>
 
     <div class="side-sec" style="flex:1;">
@@ -196,13 +196,13 @@ tr:hover td{background:rgba(0,229,255,.03);}
 
     <div class="pane active" id="pane-channels">
       <div class="card">
-        <div class="card-ttl">Spectral Channels â€” Raw Counts</div>
+        <div class="card-ttl">Spectral Channels - Raw Counts</div>
         <div class="ch-grid" id="chGrid"></div>
       </div>
       <div class="card">
         <div class="card-ttl">
           <span>Clear Channel Trend</span>
-          <span style="color:var(--cyan);font-family:var(--mono);font-size:9px;" id="clearLive">â€”</span>
+          <span style="color:var(--cyan);font-family:var(--mono);font-size:9px;" id="clearLive">-</span>
         </div>
         <canvas id="trendChart"></canvas>
       </div>
@@ -238,25 +238,25 @@ tr:hover td{background:rgba(0,229,255,.03);}
 
     <div class="pane" id="pane-guide">
       <div class="card">
-        <div class="card-ttl">How to use â€” Step by step</div>
+        <div class="card-ttl">How to use - Step by step</div>
         <div style="font-size:13px;line-height:2.2;color:#8ab0cc;">
-          <div><span style="color:var(--cyan);font-weight:700;">Step 1 â€” Power on ESP32</span><br>
+          <div><span style="color:var(--cyan);font-weight:700;">Step 1 - Power on ESP32</span><br>
           Plug the ESP32 into a USB power source or laptop.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 2 â€” Connect</span><br>
-          <b style="color:var(--text);">On laptop (USB cable):</b> Click USB Cable â†’ select AS7341_Sensor â†’ Connect.<br>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 2 - Connect</span><br>
+          <b style="color:var(--text);">On laptop (USB cable):</b> Click USB Cable -> select AS7341_Sensor -> Connect.<br>
           <b style="color:var(--text);">On Android (Bluetooth):</b> Pair with AS7341_Sensor in phone settings first, then click Bluetooth here.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 3 â€” Set AUTO-STOP timer</span><br>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 3 - Set AUTO-STOP timer</span><br>
           Pick a duration from the <b style="color:var(--orange);">AUTO-STOP</b> dropdown (default 300 s). Select <b>Manual only</b> to stop yourself.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 4 â€” Start measuring</span><br>
-          Click <b style="color:var(--green);">â–¶ START</b>. You can switch tabs or do other work â€” data continues in background.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 5 â€” Save</span><br>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 4 - Start measuring</span><br>
+          Click <b style="color:var(--green);">START</b>. You can switch tabs or do other work - data continues in background.</div>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 5 - Save</span><br>
           After stopping, the save dialog appears. Choose category, enter a name, then:<br>
-          â€¢ Click <b style="color:var(--orange);">Save to Sheets</b> to save to Google Drive.<br>
-          â€¢ Click <b style="color:var(--cyan);">Download CSV</b> to save a local .csv file to your computer.<br>
+          - Click <b style="color:var(--orange);">Save to Sheets</b> to save to Google Drive.<br>
+          - Click <b style="color:var(--cyan);">Download CSV</b> to save a local .csv file to your computer.<br>
           <b style="color:var(--text);">Starting a new measurement always clears previous data automatically.</b></div>
           <div style="margin-top:12px;padding:10px 14px;background:var(--bg3);border-radius:7px;border-left:3px solid var(--cyan);">
             <b style="color:var(--cyan);">Browser:</b> Google Chrome only. Not Firefox / Safari / Edge.<br>
-            <b style="color:var(--cyan);">Sensor:</b> ATIME=29 Â· ASTEP=599 Â· GAIN=4X Â· DI blank Clear â‰ˆ 3644
+            <b style="color:var(--cyan);">Sensor:</b> ATIME=29 | ASTEP=599 | GAIN=4X | DI blank Clear ~ 3644
           </div>
         </div>
       </div>
@@ -265,22 +265,22 @@ tr:hover td{background:rgba(0,229,255,.03);}
 </div>
 
 <div class="mob-bar" id="mobBar">
-  <button class="btn btn-usb" style="font-size:11px;" onclick="connectUSB()">ðŸ”Œ USB</button>
-  <button class="btn btn-bt"  style="font-size:11px;" onclick="connectBT()">ðŸ“¶ BT</button>
-  <button class="btn btn-start" id="mobStart" onclick="cmdStart()" disabled style="font-size:11px;">â–¶ START</button>
-  <button class="btn btn-stop"  id="mobStop"  onclick="cmdStop()"  disabled style="font-size:11px;">â–  STOP</button>
-  <button class="btn btn-save"  id="mobSave"  onclick="openSave()" disabled style="font-size:11px;">ðŸ’¾</button>
+  <button class="btn btn-usb" style="font-size:11px;" onclick="connectUSB()">USB</button>
+  <button class="btn btn-bt"  style="font-size:11px;" onclick="connectBT()">BT</button>
+  <button class="btn btn-start" id="mobStart" onclick="cmdStart()" disabled style="font-size:11px;">START</button>
+  <button class="btn btn-stop"  id="mobStop"  onclick="cmdStop()"  disabled style="font-size:11px;">STOP</button>
+  <button class="btn btn-save"  id="mobSave"  onclick="openSave()" disabled style="font-size:11px;">SAVE</button>
 </div>
 
 <!-- SAVE MODAL -->
 <div class="overlay" id="saveOverlay">
   <div class="modal">
-    <div class="modal-ttl">ðŸ’¾ Save Data</div>
+    <div class="modal-ttl">Save Data</div>
     <div class="modal-sub" id="modalSub">0 readings collected</div>
 
     <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">CATEGORY</div>
     <select id="expCategorySelect" onchange="onCategoryChange()" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:11px 13px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;margin-bottom:8px;cursor:pointer;">
-      <option value="">â€” Select category â€”</option>
+      <option value="">- Select category -</option>
       <option value="ONLY DI">ONLY DI</option>
       <option value="DI + UHP">DI + UHP</option>
       <option value="1U + UHP">1U + UHP</option>
@@ -298,28 +298,28 @@ tr:hover td{background:rgba(0,229,255,.03);}
       <option value="D3">D3</option>
       <option value="D2">D2</option>
       <option value="D1">D1</option>
-      <option value="__other__">Other (type below) âœï¸</option>
+      <option value="__other__">Other (type below)</option>
     </select>
     <input id="expCategoryOther" type="text" placeholder="Type your custom category..." style="display:none;margin-bottom:4px;"/>
 
     <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">FILE / SHEET NAME</div>
     <input id="expName" type="text" placeholder="e.g. Experiment_20260509_1430"/>
 
-    <!-- â”€â”€ OPTION 1: Google Sheets â”€â”€ -->
+    <!-- -- OPTION 1: Google Sheets -- -->
     <div class="modal-divider"><span>SAVE TO GOOGLE DRIVE</span></div>
     <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.7;">
-      Creates a new Google Sheet in your<br>Drive â†’ SpectroSensor_Data folder.
+      Creates a new Google Sheet in your<br>Drive -> SpectroSensor_Data folder.
     </div>
-    <button class="btn btn-save" id="doSaveBtn" onclick="doSave()">â˜ï¸ Save to Google Sheets</button>
+    <button class="btn btn-save" id="doSaveBtn" onclick="doSave()">Save to Google Sheets</button>
 
-    <!-- â”€â”€ OPTION 2: Local CSV â”€â”€ -->
+    <!-- -- OPTION 2: Local CSV -- -->
     <div class="modal-divider"><span>OR SAVE LOCALLY</span></div>
     <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.7;">
       Downloads a .csv file directly to<br>your computer. No internet needed.
     </div>
-    <button class="btn btn-csv" onclick="doDownloadCSV()">â¬‡ï¸ Download CSV</button>
+    <button class="btn btn-csv" onclick="doDownloadCSV()">Download CSV</button>
 
-    <!-- â”€â”€ Cancel â”€â”€ -->
+    <!-- -- Cancel -- -->
     <div style="margin-top:12px;">
       <button class="btn btn-ghost" onclick="closeSave()">Cancel</button>
     </div>
@@ -329,9 +329,9 @@ tr:hover td{background:rgba(0,229,255,.03);}
 <div class="toast" id="toast"></div>
 
 <script>
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // CONFIG
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw80kprnY8EjpTrLXCk6dXweM8gs1gkcyCWUgRLbNuNydFN4KNuQo0pTug8X-Z4JGPkdg/exec';
 const BAUD       = 115200;
 const FULL_SCALE = 18000;
@@ -339,14 +339,14 @@ const BT_SERVICE = '0000ffe0-0000-1000-8000-00805f9b34fb';
 const BT_CHAR    = '0000ffe1-0000-1000-8000-00805f9b34fb';
 
 const CHS = [
-  {id:'F1', lbl:'F1 â€” 415nm', col:'#a78bfa'},
-  {id:'F2', lbl:'F2 â€” 445nm', col:'#60a5fa'},
-  {id:'F3', lbl:'F3 â€” 480nm', col:'#22d3ee'},
-  {id:'F4', lbl:'F4 â€” 515nm', col:'#4ade80'},
-  {id:'F5', lbl:'F5 â€” 555nm', col:'#facc15'},
-  {id:'F6', lbl:'F6 â€” 590nm', col:'#fb923c'},
-  {id:'F7', lbl:'F7 â€” 630nm', col:'#f87171'},
-  {id:'F8', lbl:'F8 â€” 680nm', col:'#ef4444'},
+  {id:'F1', lbl:'F1 - 415nm', col:'#a78bfa'},
+  {id:'F2', lbl:'F2 - 445nm', col:'#60a5fa'},
+  {id:'F3', lbl:'F3 - 480nm', col:'#22d3ee'},
+  {id:'F4', lbl:'F4 - 515nm', col:'#4ade80'},
+  {id:'F5', lbl:'F5 - 555nm', col:'#facc15'},
+  {id:'F6', lbl:'F6 - 590nm', col:'#fb923c'},
+  {id:'F7', lbl:'F7 - 630nm', col:'#f87171'},
+  {id:'F8', lbl:'F8 - 680nm', col:'#ef4444'},
   {id:'CLR',lbl:'Clear',      col:'#00e5ff'},
   {id:'NIR',lbl:'NIR',        col:'#6b7280'},
 ];
@@ -355,9 +355,9 @@ const RATIOS = [
   ['p6','F7/F6'],['p7','F6/CLR'],['p8','F7/CLR'],['p9','(F6+F7)/CLR'],['p10','F2/CLR'],
 ];
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // STATE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 let connMode  = null;
 let isConn    = false;
 let isMeasure = false;
@@ -371,27 +371,27 @@ let elapsed       = 0;
 let autoStopSec   = 0;
 let autoStopFired = false;
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // BUILD UI
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function buildUI() {
   document.getElementById('chGrid').innerHTML = CHS.map(c=>`
     <div class="ch-card" id="cc_${c.id}" style="border-top-color:${c.col}">
       <div class="ch-lbl">${c.lbl}</div>
-      <div class="ch-num" id="cn_${c.id}">â€”</div>
+      <div class="ch-num" id="cn_${c.id}">-</div>
       <div class="ch-bar-bg"><div class="ch-bar" id="cb_${c.id}" style="background:${c.col}"></div></div>
     </div>`).join('');
 
   document.getElementById('ratioGrid').innerHTML = RATIOS.map(([id,lbl])=>`
     <div class="ratio-card">
       <span class="ratio-lbl">${id} ${lbl}</span>
-      <span class="ratio-num" id="${id}">â€”</span>
+      <span class="ratio-num" id="${id}">-</span>
     </div>`).join('');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // WEB WORKER TIMER
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function startWorkerTimer() {
   stopWorkerTimer();
   elapsed       = 0;
@@ -437,9 +437,9 @@ function stopWorkerTimer() {
   document.getElementById('countdownLbl').textContent = '';
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // USB CONNECTION
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 async function connectUSB() {
   if (!('serial' in navigator)) {
     toast('Use Google Chrome for USB connection', true);
@@ -473,9 +473,9 @@ async function usbReadLoop() {
   } catch(e) { log('USB read error: '+e.message,'err'); onDisconnected(); }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // BLUETOOTH CONNECTION
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 async function connectBT() {
   if (!navigator.bluetooth) {
     toast('Bluetooth needs Chrome on Android', true);
@@ -509,9 +509,9 @@ async function connectBT() {
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // DISCONNECT
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 async function doDisconnect() {
   isMeasure = false; stopWorkerTimer();
   try {
@@ -525,13 +525,13 @@ async function doDisconnect() {
 
 function onConnected(mode) {
   document.getElementById('led').className = 'led on';
-  document.getElementById('connLbl').textContent = 'Connected Â· ' + mode;
+  document.getElementById('connLbl').textContent = 'Connected | ' + mode;
   document.getElementById('btnUsb').style.display  = 'none';
   document.getElementById('btnBt').style.display   = 'none';
   document.getElementById('btnDisc').style.display = '';
   setBtn('btnStart', false); setBtn('mobStart', false);
   log('Connected via ' + mode, 'ok');
-  setStatus('ready', 'Connected Â· ready');
+  setStatus('ready', 'Connected | ready');
 }
 
 function onDisconnected() {
@@ -547,9 +547,9 @@ function onDisconnected() {
   log('Disconnected', 'err');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // SEND COMMAND
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 async function send(c) {
   const enc = new TextEncoder().encode(c);
   try {
@@ -558,9 +558,9 @@ async function send(c) {
   } catch(e) { log('Send error: '+e.message, 'err'); }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // START / STOP
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function cmdStart() {
   clearSessionData();
   send('M');
@@ -577,9 +577,9 @@ function cmdStop() {
   setBtn('btnStart', false); setBtn('mobStart', false);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // PROCESS INCOMING LINE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function processLine(line) {
   if (!line) return;
   log(line.substring(0, 70));
@@ -616,9 +616,9 @@ function processLine(line) {
   setBtn('btnSave', false); setBtn('mobSave', false);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // LIVE UI UPDATE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function updateLive(r) {
   CHS.forEach(c => {
     const v  = r[c.id] || 0;
@@ -634,9 +634,9 @@ function updateLive(r) {
   });
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // TABLE ROW
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function addRow(r) {
   const tb = document.getElementById('tblBody');
   const tr = document.createElement('tr');
@@ -650,9 +650,9 @@ function addRow(r) {
   tb.appendChild(tr);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // CHART
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function drawChart() {
   const cv = document.getElementById('trendChart');
   if (!cv.offsetWidth) return;
@@ -675,9 +675,9 @@ function drawChart() {
   ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// SHARED HELPER â€” get category + name + build data
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
+// SHARED HELPER - get category + name + build data
+// ====================================================
 function getFormValues() {
   const name    = document.getElementById('expName').value.trim();
   const selVal  = document.getElementById('expCategorySelect').value;
@@ -707,9 +707,9 @@ function buildDataRows(category) {
   ]);
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // SAVE MODAL OPEN / CLOSE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function openSave() {
   if (!rows.length) { toast('No data to save', true); return; }
   const d     = new Date();
@@ -724,14 +724,14 @@ function openSave() {
 }
 function closeSave() { document.getElementById('saveOverlay').classList.remove('show'); }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // SAVE TO GOOGLE SHEETS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 async function doSave() {
   const { name, category } = getFormValues();
   if (!name) { alert('Please enter a name'); return; }
   const btn = document.getElementById('doSaveBtn');
-  btn.textContent = 'â³ Saving...'; btn.disabled = true;
+  btn.textContent = 'Saving...'; btn.disabled = true;
 
   try {
     await fetch(SCRIPT_URL, {
@@ -742,19 +742,19 @@ async function doSave() {
     });
     await new Promise(res => setTimeout(res, 2000));
     closeSave();
-    toast('âœ… Saved to Sheets: ' + name);
-    log('Saved [' + category + '] â†’ ' + name, 'ok');
+    toast('Saved to Sheets: ' + name);
+    log('Saved [' + category + '] -> ' + name, 'ok');
   } catch(e) {
-    toast('Save failed â€” check internet', true);
+    toast('Save failed - check internet', true);
     log('Save error: ' + e.message, 'err');
   } finally {
-    btn.textContent = 'â˜ï¸ Save to Google Sheets'; btn.disabled = false;
+    btn.textContent = 'Save to Google Sheets'; btn.disabled = false;
   }
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-// DOWNLOAD CSV â€” saves file locally, no internet needed
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
+// DOWNLOAD CSV - saves file locally, no internet needed
+// ====================================================
 function doDownloadCSV() {
   const { name, category } = getFormValues();
   if (!name) { alert('Please enter a name'); return; }
@@ -762,7 +762,7 @@ function doDownloadCSV() {
   const headers = buildHeaders();
   const data    = buildDataRows(category);
 
-  // Build CSV string â€” wrap values that contain commas in quotes
+  // Build CSV string - wrap values that contain commas in quotes
   function escapeCSV(val) {
     const s = String(val);
     return s.includes(',') ? '"' + s + '"' : s;
@@ -786,13 +786,13 @@ function doDownloadCSV() {
   URL.revokeObjectURL(url);
 
   closeSave();
-  toast('â¬‡ï¸ Downloaded: ' + name + '.csv');
-  log('CSV downloaded [' + category + '] â†’ ' + name + '.csv', 'ok');
+  toast('Downloaded: ' + name + '.csv');
+  log('CSV downloaded [' + category + '] -> ' + name + '.csv', 'ok');
 }
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 // HELPERS
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ====================================================
 function clearSessionData() {
   rows = []; trend = [];
   document.getElementById('tblBody').innerHTML     = '';
@@ -804,14 +804,14 @@ function clearSessionData() {
   CHS.forEach(c => {
     const ne = document.getElementById('cn_'+c.id);
     const be = document.getElementById('cb_'+c.id);
-    if (ne) ne.textContent = 'â€”';
+    if (ne) ne.textContent = '-';
     if (be) be.style.width = '0%';
   });
   RATIOS.forEach(([id]) => {
     const el = document.getElementById(id);
-    if (el) el.textContent = 'â€”';
+    if (el) el.textContent = '-';
   });
-  document.getElementById('clearLive').textContent = 'â€”';
+  document.getElementById('clearLive').textContent = '-';
 }
 
 function clearAll() {
