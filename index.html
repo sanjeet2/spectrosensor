@@ -51,13 +51,13 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);display:flex
 .btn-start{background:rgba(0,255,136,.15);color:var(--green);border:1px solid rgba(0,255,136,.4);}
 .btn-stop{background:rgba(255,51,85,.15);color:var(--red);border:1px solid rgba(255,51,85,.4);}
 .btn-save{background:rgba(255,140,0,.15);color:var(--orange);border:1px solid rgba(255,140,0,.4);}
+.btn-csv{background:rgba(0,229,255,.15);color:var(--cyan);border:1px solid rgba(0,229,255,.4);}
 .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);font-size:12px;padding:8px;}
 .timer{text-align:center;padding:12px 8px;background:var(--bg3);border-radius:8px;margin-bottom:8px;border:1px solid var(--border);}
 .timer-val{font-family:var(--mono);font-size:30px;color:var(--cyan);letter-spacing:2px;}
 .timer-sub{font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:2px;}
 .timer-countdown{font-family:var(--mono);font-size:11px;color:var(--orange);margin-top:5px;min-height:16px;letter-spacing:1px;}
 .rows-badge{text-align:center;font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;}
-/* ─ AUTO-STOP SETTING ─ */
 .autostop-row{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:8px 10px;margin-bottom:8px;}
 .autostop-row label{font-family:var(--mono);font-size:9px;color:var(--muted);white-space:nowrap;letter-spacing:1px;}
 .autostop-row select{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-family:var(--mono);font-size:11px;padding:3px 5px;outline:none;cursor:pointer;}
@@ -110,6 +110,10 @@ tr:hover td{background:rgba(0,229,255,.03);}
 .modal-sub{font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:18px;}
 .modal input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:11px 13px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;margin-bottom:14px;transition:border-color .2s;}
 .modal input:focus{border-color:var(--cyan);}
+/* divider line between the two save options */
+.modal-divider{display:flex;align-items:center;gap:10px;margin:4px 0 14px;}
+.modal-divider span{font-family:var(--mono);font-size:9px;color:var(--muted);white-space:nowrap;letter-spacing:1px;}
+.modal-divider::before,.modal-divider::after{content:'';flex:1;height:1px;background:var(--border);}
 .modal-row{display:flex;gap:8px;}
 .modal-row .btn{flex:1;margin-bottom:0;}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--green);color:#001a0d;font-family:var(--mono);font-size:12px;font-weight:700;padding:11px 22px;border-radius:30px;transition:transform .35s cubic-bezier(.34,1.56,.64,1);z-index:999;white-space:nowrap;}
@@ -122,7 +126,7 @@ tr:hover td{background:rgba(0,229,255,.03);}
 <body>
 
 <div class="hdr">
-  <div class="hdr-logo">AS<span>7341</span> · SPECTROSENSOR</div>
+  <div class="hdr-logo">AS<span>7341</span> Â· SPECTROSENSOR</div>
   <div class="hdr-conn">
     <div class="led" id="led"></div>
     <span id="connLbl">Not connected</span>
@@ -134,9 +138,9 @@ tr:hover td{background:rgba(0,229,255,.03);}
 
     <div class="side-sec">
       <div class="sec-lbl">Connect</div>
-      <button class="btn btn-usb" id="btnUsb" onclick="connectUSB()">🔌 USB Cable</button>
-      <button class="btn btn-bt"  id="btnBt"  onclick="connectBT()">📶 Bluetooth</button>
-      <button class="btn btn-disc" id="btnDisc" onclick="doDisconnect()" style="display:none;">✕ Disconnect</button>
+      <button class="btn btn-usb" id="btnUsb" onclick="connectUSB()">ðŸ”Œ USB Cable</button>
+      <button class="btn btn-bt"  id="btnBt"  onclick="connectBT()">ðŸ“¶ Bluetooth</button>
+      <button class="btn btn-disc" id="btnDisc" onclick="doDisconnect()" style="display:none;">âœ• Disconnect</button>
     </div>
 
     <div class="side-sec">
@@ -144,12 +148,9 @@ tr:hover td{background:rgba(0,229,255,.03);}
       <div class="timer">
         <div class="timer-val" id="timerVal">0.0s</div>
         <div class="timer-sub">ELAPSED</div>
-        <!-- CHANGE 3: countdown shown here when auto-stop is active -->
         <div class="timer-countdown" id="countdownLbl"></div>
       </div>
       <div class="rows-badge" id="rowsBadge">0 readings</div>
-
-      <!-- CHANGE 2: auto-stop dropdown -->
       <div class="autostop-row">
         <label>AUTO-STOP</label>
         <select id="autoStopSel">
@@ -164,19 +165,18 @@ tr:hover td{background:rgba(0,229,255,.03);}
           <option value="1800">1800 s</option>
         </select>
       </div>
-
       <div class="status" id="statusBar">
         <div class="status-dot" id="statusDot"></div>
         <span class="status-txt" id="statusTxt">Ready</span>
       </div>
-      <button class="btn btn-start" id="btnStart" onclick="cmdStart()" disabled>▶ START</button>
-      <button class="btn btn-stop"  id="btnStop"  onclick="cmdStop()"  disabled>■ STOP</button>
+      <button class="btn btn-start" id="btnStart" onclick="cmdStart()" disabled>â–¶ START</button>
+      <button class="btn btn-stop"  id="btnStop"  onclick="cmdStop()"  disabled>â–  STOP</button>
     </div>
 
     <div class="side-sec">
       <div class="sec-lbl">Export</div>
-      <button class="btn btn-save" id="btnSave" onclick="openSave()" disabled>💾 Save to Sheets</button>
-      <button class="btn btn-ghost" onclick="clearAll()">🗑 Clear data</button>
+      <button class="btn btn-save" id="btnSave" onclick="openSave()" disabled>ðŸ’¾ Save to Sheets</button>
+      <button class="btn btn-ghost" onclick="clearAll()">ðŸ—‘ Clear data</button>
     </div>
 
     <div class="side-sec" style="flex:1;">
@@ -196,13 +196,13 @@ tr:hover td{background:rgba(0,229,255,.03);}
 
     <div class="pane active" id="pane-channels">
       <div class="card">
-        <div class="card-ttl">Spectral Channels — Raw Counts</div>
+        <div class="card-ttl">Spectral Channels â€” Raw Counts</div>
         <div class="ch-grid" id="chGrid"></div>
       </div>
       <div class="card">
         <div class="card-ttl">
           <span>Clear Channel Trend</span>
-          <span style="color:var(--cyan);font-family:var(--mono);font-size:9px;" id="clearLive">—</span>
+          <span style="color:var(--cyan);font-family:var(--mono);font-size:9px;" id="clearLive">â€”</span>
         </div>
         <canvas id="trendChart"></canvas>
       </div>
@@ -238,23 +238,25 @@ tr:hover td{background:rgba(0,229,255,.03);}
 
     <div class="pane" id="pane-guide">
       <div class="card">
-        <div class="card-ttl">How to use — Step by step</div>
+        <div class="card-ttl">How to use â€” Step by step</div>
         <div style="font-size:13px;line-height:2.2;color:#8ab0cc;">
-          <div><span style="color:var(--cyan);font-weight:700;">Step 1 — Power on ESP32</span><br>
+          <div><span style="color:var(--cyan);font-weight:700;">Step 1 â€” Power on ESP32</span><br>
           Plug the ESP32 into a USB power source or laptop.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 2 — Connect</span><br>
-          <b style="color:var(--text);">On laptop (USB cable):</b> Click USB Cable → select AS7341_Sensor → Connect.<br>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 2 â€” Connect</span><br>
+          <b style="color:var(--text);">On laptop (USB cable):</b> Click USB Cable â†’ select AS7341_Sensor â†’ Connect.<br>
           <b style="color:var(--text);">On Android (Bluetooth):</b> Pair with AS7341_Sensor in phone settings first, then click Bluetooth here.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 3 — Set AUTO-STOP timer</span><br>
-          Pick a duration from the <b style="color:var(--orange);">AUTO-STOP</b> dropdown (default 300 s). Select <b>Manual only</b> to stop yourself. The countdown shows in the timer box during measurement.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 4 — Start measuring</span><br>
-          Click <b style="color:var(--green);">▶ START</b>. You can now <b style="color:var(--text);">switch tabs, open other apps, or do any other work</b> — data collection continues in the background and stops automatically at the set time.</div>
-          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 5 — Save</span><br>
-          After stopping, the save dialog appears automatically. Enter a name and click Save to Sheets.<br>
-          <b style="color:var(--text);">Starting a new measurement always clears the previous data automatically.</b></div>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 3 â€” Set AUTO-STOP timer</span><br>
+          Pick a duration from the <b style="color:var(--orange);">AUTO-STOP</b> dropdown (default 300 s). Select <b>Manual only</b> to stop yourself.</div>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 4 â€” Start measuring</span><br>
+          Click <b style="color:var(--green);">â–¶ START</b>. You can switch tabs or do other work â€” data continues in background.</div>
+          <div style="margin-top:12px;"><span style="color:var(--cyan);font-weight:700;">Step 5 â€” Save</span><br>
+          After stopping, the save dialog appears. Choose category, enter a name, then:<br>
+          â€¢ Click <b style="color:var(--orange);">Save to Sheets</b> to save to Google Drive.<br>
+          â€¢ Click <b style="color:var(--cyan);">Download CSV</b> to save a local .csv file to your computer.<br>
+          <b style="color:var(--text);">Starting a new measurement always clears previous data automatically.</b></div>
           <div style="margin-top:12px;padding:10px 14px;background:var(--bg3);border-radius:7px;border-left:3px solid var(--cyan);">
             <b style="color:var(--cyan);">Browser:</b> Google Chrome only. Not Firefox / Safari / Edge.<br>
-            <b style="color:var(--cyan);">Sensor:</b> ATIME=29 · ASTEP=599 · GAIN=4X · DI blank Clear ≈ 3644
+            <b style="color:var(--cyan);">Sensor:</b> ATIME=29 Â· ASTEP=599 Â· GAIN=4X Â· DI blank Clear â‰ˆ 3644
           </div>
         </div>
       </div>
@@ -263,20 +265,22 @@ tr:hover td{background:rgba(0,229,255,.03);}
 </div>
 
 <div class="mob-bar" id="mobBar">
-  <button class="btn btn-usb" style="font-size:11px;" onclick="connectUSB()">🔌 USB</button>
-  <button class="btn btn-bt"  style="font-size:11px;" onclick="connectBT()">📶 BT</button>
-  <button class="btn btn-start" id="mobStart" onclick="cmdStart()" disabled style="font-size:11px;">▶ START</button>
-  <button class="btn btn-stop"  id="mobStop"  onclick="cmdStop()"  disabled style="font-size:11px;">■ STOP</button>
-  <button class="btn btn-save"  id="mobSave"  onclick="openSave()" disabled style="font-size:11px;">💾</button>
+  <button class="btn btn-usb" style="font-size:11px;" onclick="connectUSB()">ðŸ”Œ USB</button>
+  <button class="btn btn-bt"  style="font-size:11px;" onclick="connectBT()">ðŸ“¶ BT</button>
+  <button class="btn btn-start" id="mobStart" onclick="cmdStart()" disabled style="font-size:11px;">â–¶ START</button>
+  <button class="btn btn-stop"  id="mobStop"  onclick="cmdStop()"  disabled style="font-size:11px;">â–  STOP</button>
+  <button class="btn btn-save"  id="mobSave"  onclick="openSave()" disabled style="font-size:11px;">ðŸ’¾</button>
 </div>
 
+<!-- SAVE MODAL -->
 <div class="overlay" id="saveOverlay">
   <div class="modal">
-    <div class="modal-ttl">💾 Save to Google Sheets</div>
+    <div class="modal-ttl">ðŸ’¾ Save Data</div>
     <div class="modal-sub" id="modalSub">0 readings collected</div>
+
     <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">CATEGORY</div>
     <select id="expCategorySelect" onchange="onCategoryChange()" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:11px 13px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;margin-bottom:8px;cursor:pointer;">
-      <option value="">— Select category —</option>
+      <option value="">â€” Select category â€”</option>
       <option value="ONLY DI">ONLY DI</option>
       <option value="DI + UHP">DI + UHP</option>
       <option value="1U + UHP">1U + UHP</option>
@@ -294,17 +298,30 @@ tr:hover td{background:rgba(0,229,255,.03);}
       <option value="D3">D3</option>
       <option value="D2">D2</option>
       <option value="D1">D1</option>
-      <option value="__other__">Other (type below) ✏️</option>
+      <option value="__other__">Other (type below) âœï¸</option>
     </select>
     <input id="expCategoryOther" type="text" placeholder="Type your custom category..." style="display:none;margin-bottom:4px;"/>
-    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">SHEET / EXPERIMENT NAME</div>
+
+    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;">FILE / SHEET NAME</div>
     <input id="expName" type="text" placeholder="e.g. Experiment_20260509_1430"/>
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:14px;line-height:1.8;">
-      Category is added as the first column in every row.<br>Saves to Google Drive → SpectroSensor_Data folder.
+
+    <!-- â”€â”€ OPTION 1: Google Sheets â”€â”€ -->
+    <div class="modal-divider"><span>SAVE TO GOOGLE DRIVE</span></div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.7;">
+      Creates a new Google Sheet in your<br>Drive â†’ SpectroSensor_Data folder.
     </div>
-    <div class="modal-row">
+    <button class="btn btn-save" id="doSaveBtn" onclick="doSave()">â˜ï¸ Save to Google Sheets</button>
+
+    <!-- â”€â”€ OPTION 2: Local CSV â”€â”€ -->
+    <div class="modal-divider"><span>OR SAVE LOCALLY</span></div>
+    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:10px;line-height:1.7;">
+      Downloads a .csv file directly to<br>your computer. No internet needed.
+    </div>
+    <button class="btn btn-csv" onclick="doDownloadCSV()">â¬‡ï¸ Download CSV</button>
+
+    <!-- â”€â”€ Cancel â”€â”€ -->
+    <div style="margin-top:12px;">
       <button class="btn btn-ghost" onclick="closeSave()">Cancel</button>
-      <button class="btn btn-save" id="doSaveBtn" onclick="doSave()">Save to Sheets</button>
     </div>
   </div>
 </div>
@@ -312,9 +329,9 @@ tr:hover td{background:rgba(0,229,255,.03);}
 <div class="toast" id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // CONFIG
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw80kprnY8EjpTrLXCk6dXweM8gs1gkcyCWUgRLbNuNydFN4KNuQo0pTug8X-Z4JGPkdg/exec';
 const BAUD       = 115200;
 const FULL_SCALE = 18000;
@@ -322,14 +339,14 @@ const BT_SERVICE = '0000ffe0-0000-1000-8000-00805f9b34fb';
 const BT_CHAR    = '0000ffe1-0000-1000-8000-00805f9b34fb';
 
 const CHS = [
-  {id:'F1', lbl:'F1 — 415nm', col:'#a78bfa'},
-  {id:'F2', lbl:'F2 — 445nm', col:'#60a5fa'},
-  {id:'F3', lbl:'F3 — 480nm', col:'#22d3ee'},
-  {id:'F4', lbl:'F4 — 515nm', col:'#4ade80'},
-  {id:'F5', lbl:'F5 — 555nm', col:'#facc15'},
-  {id:'F6', lbl:'F6 — 590nm', col:'#fb923c'},
-  {id:'F7', lbl:'F7 — 630nm', col:'#f87171'},
-  {id:'F8', lbl:'F8 — 680nm', col:'#ef4444'},
+  {id:'F1', lbl:'F1 â€” 415nm', col:'#a78bfa'},
+  {id:'F2', lbl:'F2 â€” 445nm', col:'#60a5fa'},
+  {id:'F3', lbl:'F3 â€” 480nm', col:'#22d3ee'},
+  {id:'F4', lbl:'F4 â€” 515nm', col:'#4ade80'},
+  {id:'F5', lbl:'F5 â€” 555nm', col:'#facc15'},
+  {id:'F6', lbl:'F6 â€” 590nm', col:'#fb923c'},
+  {id:'F7', lbl:'F7 â€” 630nm', col:'#f87171'},
+  {id:'F8', lbl:'F8 â€” 680nm', col:'#ef4444'},
   {id:'CLR',lbl:'Clear',      col:'#00e5ff'},
   {id:'NIR',lbl:'NIR',        col:'#6b7280'},
 ];
@@ -338,9 +355,9 @@ const RATIOS = [
   ['p6','F7/F6'],['p7','F6/CLR'],['p8','F7/CLR'],['p9','(F6+F7)/CLR'],['p10','F2/CLR'],
 ];
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // STATE
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 let connMode  = null;
 let isConn    = false;
 let isMeasure = false;
@@ -349,40 +366,32 @@ let trend     = [];
 let rxBuf     = '';
 let usbPort = null, usbWriter = null, usbReader = null;
 let btDevice = null, btChar = null;
+let workerTimer   = null;
+let elapsed       = 0;
+let autoStopSec   = 0;
+let autoStopFired = false;
 
-// ── Timer state ──
-// CHANGE 3: Web Worker timer — runs even when tab is in background.
-// Chrome throttles normal setInterval to ~1/sec (or slower) when a tab
-// is hidden. A Worker thread is NOT throttled, so the countdown stays
-// accurate and auto-stop fires on time even if you switch tabs.
-let workerTimer  = null;
-let elapsed      = 0;
-let autoStopSec  = 0;
-let autoStopFired = false;   // guard: ensure stop fires only once
-
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // BUILD UI
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function buildUI() {
   document.getElementById('chGrid').innerHTML = CHS.map(c=>`
     <div class="ch-card" id="cc_${c.id}" style="border-top-color:${c.col}">
       <div class="ch-lbl">${c.lbl}</div>
-      <div class="ch-num" id="cn_${c.id}">—</div>
+      <div class="ch-num" id="cn_${c.id}">â€”</div>
       <div class="ch-bar-bg"><div class="ch-bar" id="cb_${c.id}" style="background:${c.col}"></div></div>
     </div>`).join('');
 
   document.getElementById('ratioGrid').innerHTML = RATIOS.map(([id,lbl])=>`
     <div class="ratio-card">
       <span class="ratio-lbl">${id} ${lbl}</span>
-      <span class="ratio-num" id="${id}">—</span>
+      <span class="ratio-num" id="${id}">â€”</span>
     </div>`).join('');
 }
 
-// ════════════════════════════════════════════════════
-// WEB WORKER TIMER  (CHANGE 3)
-// Built inline from a Blob — no extra file needed.
-// Posts a 'tick' message every 100 ms regardless of tab visibility.
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// WEB WORKER TIMER
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function startWorkerTimer() {
   stopWorkerTimer();
   elapsed       = 0;
@@ -402,27 +411,19 @@ function startWorkerTimer() {
   `;
   const blob = new Blob([workerCode], {type:'application/javascript'});
   workerTimer = new Worker(URL.createObjectURL(blob));
-
   workerTimer.onmessage = function() {
-    // Each message = 100 ms tick
     elapsed = Math.round((elapsed + 0.1) * 10) / 10;
-
-    // Update elapsed display
     document.getElementById('timerVal').textContent = elapsed.toFixed(1) + 's';
-
-    // Countdown display + auto-stop logic
     if (autoStopSec > 0) {
       const remaining = Math.max(0, autoStopSec - elapsed);
-      document.getElementById('countdownLbl').textContent =
-        'stops in ' + remaining.toFixed(0) + 's';
+      document.getElementById('countdownLbl').textContent = 'stops in ' + remaining.toFixed(0) + 's';
       if (elapsed >= autoStopSec && !autoStopFired) {
         autoStopFired = true;
         document.getElementById('countdownLbl').textContent = '';
-        cmdStop();   // auto-stop fires here
+        cmdStop();
       }
     }
   };
-
   workerTimer.postMessage('start');
   if (autoStopSec > 0) log('Auto-stop in ' + autoStopSec + 's', 'info');
 }
@@ -436,9 +437,9 @@ function stopWorkerTimer() {
   document.getElementById('countdownLbl').textContent = '';
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // USB CONNECTION
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function connectUSB() {
   if (!('serial' in navigator)) {
     toast('Use Google Chrome for USB connection', true);
@@ -472,9 +473,9 @@ async function usbReadLoop() {
   } catch(e) { log('USB read error: '+e.message,'err'); onDisconnected(); }
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // BLUETOOTH CONNECTION
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function connectBT() {
   if (!navigator.bluetooth) {
     toast('Bluetooth needs Chrome on Android', true);
@@ -508,9 +509,9 @@ async function connectBT() {
   }
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // DISCONNECT
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function doDisconnect() {
   isMeasure = false; stopWorkerTimer();
   try {
@@ -524,13 +525,13 @@ async function doDisconnect() {
 
 function onConnected(mode) {
   document.getElementById('led').className = 'led on';
-  document.getElementById('connLbl').textContent = 'Connected · ' + mode;
+  document.getElementById('connLbl').textContent = 'Connected Â· ' + mode;
   document.getElementById('btnUsb').style.display  = 'none';
   document.getElementById('btnBt').style.display   = 'none';
   document.getElementById('btnDisc').style.display = '';
   setBtn('btnStart', false); setBtn('mobStart', false);
   log('Connected via ' + mode, 'ok');
-  setStatus('ready', 'Connected · ready');
+  setStatus('ready', 'Connected Â· ready');
 }
 
 function onDisconnected() {
@@ -546,9 +547,9 @@ function onDisconnected() {
   log('Disconnected', 'err');
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // SEND COMMAND
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 async function send(c) {
   const enc = new TextEncoder().encode(c);
   try {
@@ -557,40 +558,28 @@ async function send(c) {
   } catch(e) { log('Send error: '+e.message, 'err'); }
 }
 
-// ════════════════════════════════════════════════════
-// START — CHANGE 1 + CHANGE 2 + CHANGE 3
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// START / STOP
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function cmdStart() {
-  // CHANGE 1: Always wipe previous session data before a new measurement.
-  // This means row numbers always start from 1 and old data never mixes
-  // with new data. No manual clearing needed between experiments.
   clearSessionData();
-
   send('M');
   setBtn('btnStart', true);  setBtn('mobStart', true);
   setBtn('btnStop',  false); setBtn('mobStop',  false);
-
-  // CHANGE 2 + 3: Start the background-safe worker timer.
-  // It reads the auto-stop dropdown and fires cmdStop() automatically.
   startWorkerTimer();
 }
 
-// ════════════════════════════════════════════════════
-// STOP
-// ════════════════════════════════════════════════════
 function cmdStop() {
-  // Guard: if already stopped (e.g. auto-stop already fired), do nothing
   if (!isMeasure && !workerTimer) return;
-
   send('S');
   stopWorkerTimer();
   setBtn('btnStop',  true);  setBtn('mobStop',  true);
   setBtn('btnStart', false); setBtn('mobStart', false);
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // PROCESS INCOMING LINE
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function processLine(line) {
   if (!line) return;
   log(line.substring(0, 70));
@@ -627,9 +616,9 @@ function processLine(line) {
   setBtn('btnSave', false); setBtn('mobSave', false);
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // LIVE UI UPDATE
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function updateLive(r) {
   CHS.forEach(c => {
     const v  = r[c.id] || 0;
@@ -645,9 +634,9 @@ function updateLive(r) {
   });
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // TABLE ROW
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function addRow(r) {
   const tb = document.getElementById('tblBody');
   const tr = document.createElement('tr');
@@ -661,9 +650,9 @@ function addRow(r) {
   tb.appendChild(tr);
 }
 
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // CHART
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function drawChart() {
   const cv = document.getElementById('trendChart');
   if (!cv.offsetWidth) return;
@@ -686,99 +675,143 @@ function drawChart() {
   ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.fill();
 }
 
-// ════════════════════════════════════════════════════
-// SAVE TO GOOGLE SHEETS
-// ════════════════════════════════════════════════════
-function openSave() {
-  if (!rows.length) { toast('No data to save', true); return; }
-  const d     = new Date();
-  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
-  document.getElementById('expName').value         = 'Experiment_' + stamp;
-  document.getElementById('expCategorySelect').value = '';
-  document.getElementById('expCategoryOther').style.display = 'none';
-  document.getElementById('expCategoryOther').value = '';
-  document.getElementById('modalSub').textContent  = rows.length + ' readings ready to save';
-  document.getElementById('saveOverlay').classList.add('show');
-  // Auto-focus the category field so user can type immediately
-  setTimeout(() => document.getElementById('expCategorySelect').focus(), 100);
-}
-function closeSave() { document.getElementById('saveOverlay').classList.remove('show'); }
-
-async function doSave() {
-  const name     = document.getElementById('expName').value.trim();
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SHARED HELPER â€” get category + name + build data
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function getFormValues() {
+  const name    = document.getElementById('expName').value.trim();
   const selVal  = document.getElementById('expCategorySelect').value;
   const category = (selVal === '__other__')
     ? (document.getElementById('expCategoryOther').value.trim() || 'Other')
     : (selVal || 'Uncategorized');
-  if (!name) { alert('Please enter a sheet name'); return; }
-  const btn  = document.getElementById('doSaveBtn');
-  btn.textContent = '⏳ Saving...'; btn.disabled = true;
+  return { name, category };
+}
 
-  // Category is the FIRST column, then all sensor columns follow
-  const headers = [
-    'Time(s)',
-    'Category',
+function buildHeaders() {
+  return [
+    'Time(s)', 'Category',
     'F1_415nm','F2_445nm','F3_480nm','F4_515nm','F5_555nm',
     'F6_590nm','F7_630nm','F8_680nm','Clear','NIR',
     'p1(F6/F4)','p2(F6/F2)','p3(F7/F5)','p4(F6/F5)','p5(F8/F6)',
     'p6(F7/F6)','p7(F6/CLR)','p8(F7/CLR)','p9((F6+F7)/CLR)','p10(F2/CLR)'
   ];
+}
 
-  // Each data row starts with the category value
-  const data = rows.map(r => [
-    r.time,
-    category,
+function buildDataRows(category) {
+  return rows.map(r => [
+    r.time, category,
     r.F1, r.F2, r.F3, r.F4, r.F5,
     r.F6, r.F7, r.F8, r.CLR, r.NIR,
     r.p1, r.p2, r.p3, r.p4, r.p5,
     r.p6, r.p7, r.p8, r.p9, r.p10
   ]);
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SAVE MODAL OPEN / CLOSE
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function openSave() {
+  if (!rows.length) { toast('No data to save', true); return; }
+  const d     = new Date();
+  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+  document.getElementById('expName').value               = 'Experiment_' + stamp;
+  document.getElementById('expCategorySelect').value     = '';
+  document.getElementById('expCategoryOther').style.display = 'none';
+  document.getElementById('expCategoryOther').value      = '';
+  document.getElementById('modalSub').textContent        = rows.length + ' readings ready to save';
+  document.getElementById('saveOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('expCategorySelect').focus(), 100);
+}
+function closeSave() { document.getElementById('saveOverlay').classList.remove('show'); }
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// SAVE TO GOOGLE SHEETS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+async function doSave() {
+  const { name, category } = getFormValues();
+  if (!name) { alert('Please enter a name'); return; }
+  const btn = document.getElementById('doSaveBtn');
+  btn.textContent = 'â³ Saving...'; btn.disabled = true;
 
   try {
     await fetch(SCRIPT_URL, {
       method:  'POST',
       mode:    'no-cors',
       headers: { 'Content-Type': 'text/plain' },
-      body:    JSON.stringify({ sheetName: name, headers, rows: data })
+      body:    JSON.stringify({ sheetName: name, headers: buildHeaders(), rows: buildDataRows(category) })
     });
     await new Promise(res => setTimeout(res, 2000));
     closeSave();
-    toast('✅ Saved: ' + name);
-    log('Saved [' + category + '] → ' + name, 'ok');
+    toast('âœ… Saved to Sheets: ' + name);
+    log('Saved [' + category + '] â†’ ' + name, 'ok');
   } catch(e) {
-    toast('Save failed — check internet', true);
+    toast('Save failed â€” check internet', true);
     log('Save error: ' + e.message, 'err');
   } finally {
-    btn.textContent = 'Save to Sheets'; btn.disabled = false;
+    btn.textContent = 'â˜ï¸ Save to Google Sheets'; btn.disabled = false;
   }
 }
 
-// ════════════════════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// DOWNLOAD CSV â€” saves file locally, no internet needed
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function doDownloadCSV() {
+  const { name, category } = getFormValues();
+  if (!name) { alert('Please enter a name'); return; }
 
-// CHANGE 1: clearSessionData() — wipes all data from previous session.
-// Called automatically at start of every new measurement.
-// Also callable manually via the 🗑 button.
+  const headers = buildHeaders();
+  const data    = buildDataRows(category);
+
+  // Build CSV string â€” wrap values that contain commas in quotes
+  function escapeCSV(val) {
+    const s = String(val);
+    return s.includes(',') ? '"' + s + '"' : s;
+  }
+
+  const csvLines = [
+    headers.map(escapeCSV).join(','),
+    ...data.map(row => row.map(escapeCSV).join(','))
+  ];
+  const csvString = csvLines.join('\r\n');
+
+  // Create a download link and click it programmatically
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = name + '.csv';   // filename = sheet name + .csv
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  closeSave();
+  toast('â¬‡ï¸ Downloaded: ' + name + '.csv');
+  log('CSV downloaded [' + category + '] â†’ ' + name + '.csv', 'ok');
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// HELPERS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 function clearSessionData() {
   rows = []; trend = [];
-  document.getElementById('tblBody').innerHTML    = '';
+  document.getElementById('tblBody').innerHTML     = '';
   document.getElementById('rowsBadge').textContent = '0 readings';
-  document.getElementById('tblLbl').textContent   = '0 rows';
-  document.getElementById('timerVal').textContent = '0.0s';
+  document.getElementById('tblLbl').textContent    = '0 rows';
+  document.getElementById('timerVal').textContent  = '0.0s';
   document.getElementById('countdownLbl').textContent = '';
   setBtn('btnSave', true); setBtn('mobSave', true);
   CHS.forEach(c => {
     const ne = document.getElementById('cn_'+c.id);
     const be = document.getElementById('cb_'+c.id);
-    if (ne) ne.textContent = '—';
+    if (ne) ne.textContent = 'â€”';
     if (be) be.style.width = '0%';
   });
   RATIOS.forEach(([id]) => {
     const el = document.getElementById(id);
-    if (el) el.textContent = '—';
+    if (el) el.textContent = 'â€”';
   });
-  document.getElementById('clearLive').textContent = '—';
+  document.getElementById('clearLive').textContent = 'â€”';
 }
 
 function clearAll() {
@@ -793,20 +826,20 @@ function setBtn(id, disabled) {
 }
 
 function setStatus(cls, txt) {
-  document.getElementById('statusDot').className  = 'status-dot ' + cls;
+  document.getElementById('statusDot').className   = 'status-dot ' + cls;
   document.getElementById('statusTxt').textContent = txt;
   isMeasure = cls === 'measuring';
 }
 
 function setBusy(b) {
-  document.getElementById('led').className        = 'led' + (b ? ' busy' : '');
-  document.getElementById('connLbl').textContent  = b ? 'Connecting...' : 'Not connected';
+  document.getElementById('led').className         = 'led' + (b ? ' busy' : '');
+  document.getElementById('connLbl').textContent   = b ? 'Connecting...' : 'Not connected';
 }
 
 function log(msg, type='') {
   const box = document.getElementById('logBox');
   const d   = document.createElement('div');
-  d.className  = 'll ' + type;
+  d.className   = 'll ' + type;
   d.textContent = '> ' + msg;
   box.appendChild(d);
   box.scrollTop = box.scrollHeight;
@@ -829,7 +862,7 @@ function showPane(id, el) {
 }
 
 function onCategoryChange() {
-  const sel = document.getElementById('expCategorySelect').value;
+  const sel        = document.getElementById('expCategorySelect').value;
   const otherInput = document.getElementById('expCategoryOther');
   if (sel === '__other__') {
     otherInput.style.display = 'block';
